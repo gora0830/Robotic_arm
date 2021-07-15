@@ -1,0 +1,57 @@
+
+begin
+
+--divisor de frecuencia
+process(clk,a,c,g)
+begin
+	if (clk'event and clk='1') then
+		a<=a+"1";
+	end if;
+	if (a=b) then
+		c<=not(c);
+		a<=(others=>'0');
+	end if;
+end process;
+salidas(6)<=c;
+
+--contador de segundos
+process(c,g)
+begin
+	if(c'event and c='1') then
+		d<=d+"1";
+		if (d=e) then
+			f<=not(f);
+			d<=(others=>'0');
+			g<=g+'1';
+			if (g="1101") then
+				g<=(others=>'0');
+			end if;
+		end if;
+	end if;
+	ma1<=not(g(3))and (not(g(2)) or (g(2) and (not(g(1)) and not (g(0)))));
+	ma2<=(not(g(3)) and g(2) and (g(1) or g(0)));
+	ma3<=g(3);
+end process;
+led<=g;
+--relojes de los motores
+salidas(5)<=ma1 and c;
+salidas(4)<=ma2 and c; 
+salidas(3)<=ma3 and c;
+
+--direcciones de movimiento
+salidas(2 downto 0)<=d1&d2&d3;
+
+end Behavioral;
+#reloj de tarjeta
+ NET "clk"   LOC = "L15";  #senal de reloj
+
+# PMOD Connector
+#motor 1
+ NET "salidas(2)"  LOC = "T3"; # Bank = 2,  Pin name = IO_L62N_D6,     Sch name = JA-D0_N
+ NET "salidas(5)"  LOC = "R3"; # Bank = 2,  Pin name = IO_L62P_D5,     Sch name = JA-D0_P
+ #motor 2
+ NET "salidas(1)"  LOC = "P6"; # Bank = 2,  Pin name = IO_L64N_D9,     Sch name = JA-D2_N
+ NET "salidas(4)"  LOC = "N5"; # Bank = 2,  Pin name = IO_L64P_D8,     Sch name = JA-D2_P
+ #motor 3
+ NET "salidas(0)"  LOC = "V9"; # Bank = 2,  Pin name = IO_L32N_GCLK28, Sch name = JA-CLK_N
+ NET "salidas(3)"  LOC = "T9"; # Bank = 2,  Pin name = IO_L32P_GCLK29, Sch name = JA-CLK_P
